@@ -5,809 +5,689 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <meta name="theme-color" content="#0F1117"/>
 <title>EDS Inspector — Primax</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#0F1117;--bg2:#1A1D27;--card:#1E2130;--border:#2A2D3E;
-  --orange:#FF6B00;--orange-dim:#FF6B0022;--orange-glow:#FF6B0044;
-  --text:#E8EAF0;--muted:#6B7280;--muted2:#4B5563;
-  --success:#22C55E;--warning:#F59E0B;--danger:#EF4444;
-  --radius:12px;--radius-sm:8px;--radius-lg:16px;
+  --orange:#FF6B00;--text:#E8EAF0;--muted:#6B7280;
+  --success:#22C55E;--danger:#EF4444;--warning:#F59E0B;
 }
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}
-#root{min-height:100vh;display:flex;flex-direction:column;}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--bg2)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-
-/* Typography */
-h1{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-0.02em}
-h2{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:-0.01em}
-h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:600}
-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:block;margin-bottom:6px}
-
-/* Inputs */
-input[type=text],input[type=number],input[type=date],select,textarea{
-  width:100%;background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--radius-sm);padding:10px 14px;
-  color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;
-  transition:border-color .15s,box-shadow .15s;outline:none;
-}
-input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-dim);}
-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236B7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
-textarea{resize:vertical;min-height:80px;}
-input[type=checkbox]{width:18px;height:18px;accent-color:var(--orange);cursor:pointer;}
-input[type=file]{display:none;}
-
-/* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;transition:all .15s;white-space:nowrap;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;min-height:100vh;}
+h1{font-size:1.4rem;font-weight:700;}
+h2{font-size:1rem;font-weight:700;color:var(--orange);}
+h3{font-size:.9rem;font-weight:600;}
+label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:block;margin-bottom:5px;}
+input,select,textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);}
+select{appearance:none;}
+textarea{resize:vertical;min-height:70px;}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;transition:all .15s;width:100%;}
 .btn-primary{background:var(--orange);color:#fff;}
-.btn-primary:hover{filter:brightness(1.1);}
-.btn-primary:active{transform:scale(.97);}
 .btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border);}
-.btn-secondary:hover{border-color:var(--orange);color:var(--orange);}
-.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}
-.btn-ghost:hover{color:var(--text);border-color:var(--muted);}
 .btn-danger{background:#EF444422;color:var(--danger);border:1px solid #EF444433;}
-.btn-danger:hover{background:#EF444433;}
-.btn-success{background:#22C55E22;color:var(--success);border:1px solid #22C55E33;}
-.btn-sm{padding:7px 14px;font-size:13px;}
-.btn-full{width:100%;}
-
-/* Cards */
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
-.card-orange{border-color:var(--orange);box-shadow:0 0 20px var(--orange-dim);}
-
-/* Pill/badge */
-.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.04em;}
-.badge-orange{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-glow);}
-.badge-green{background:#22C55E22;color:var(--success);}
-.badge-red{background:#EF444422;color:var(--danger);}
-.badge-yellow{background:#F59E0B22;color:var(--warning);}
-.badge-gray{background:var(--bg2);color:var(--muted);}
-
-/* Check item */
-.check-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
-.check-item:last-child{border-bottom:none;}
-.check-item label{font-size:13px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);margin:0;line-height:1.4;cursor:pointer;flex:1;}
-
-/* Status indicators */
-.ok{color:var(--success);}
-.nc{color:var(--danger);}
-.na{color:var(--muted);}
-
-/* Step nav dots */
-.step-dots{display:flex;gap:6px;align-items:center;}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .2s;}
-.dot.active{width:20px;border-radius:3px;background:var(--orange);}
-.dot.done{background:var(--success);}
-
-/* Section title with orange line */
-.section-title{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
-.section-title::before{content:'';display:block;width:3px;height:24px;background:var(--orange);border-radius:2px;flex-shrink:0;}
-
-/* Form group */
-.form-group{margin-bottom:14px;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-
-/* Dynamic item card */
-.item-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;}
-.item-card-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--border);cursor:pointer;}
-.item-card-body{padding:16px;}
-
-/* Progress bar */
-.progress-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
-.progress-fill{height:100%;background:var(--orange);border-radius:2px;transition:width .3s ease;}
-
-/* Top bar */
-.top-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-
-/* Bottom nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:12px 20px 20px;display:flex;gap:12px;z-index:100;}
-
-/* Content area */
-.content{padding:20px;padding-bottom:100px;flex:1;}
-
-/* Divider */
-.divider{height:1px;background:var(--border);margin:16px 0;}
-
-/* Tag input style row */
+.btn-sm{padding:6px 12px;font-size:12px;width:auto;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;}
+.fg{margin-bottom:12px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .tag-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
 .tag-row:last-child{border-bottom:none;}
-
-/* Alert */
-.alert{padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;line-height:1.5;}
-.alert-warning{background:#F59E0B11;border:1px solid #F59E0B33;color:var(--warning);}
-.alert-success{background:#22C55E11;border:1px solid #22C55E33;color:var(--success);}
+.tag-row span{font-size:13px;flex:1;padding-right:8px;}
+.btn-grp{display:flex;gap:5px;flex-shrink:0;}
+.btn-tog{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;}
+.btn-tog.active{background:var(--orange);color:#fff;border-color:var(--orange);}
+.divider{height:1px;background:var(--border);margin:14px 0;}
+.top-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 20px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;}
+.progress{height:3px;background:var(--border);}
+.progress-fill{height:100%;background:var(--orange);transition:width .3s;}
+.step-header{padding:16px 20px 0;display:flex;align-items:center;gap:10px;}
+.content{padding:16px 20px 100px;}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:12px 20px 20px;display:flex;gap:10px;}
+.section-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.section-hdr::before{content:'';width:3px;height:22px;background:var(--orange);border-radius:2px;display:block;}
+.item-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg2);border-bottom:1px solid var(--border);cursor:pointer;border-radius:8px 8px 0 0;}
+.item-body{padding:14px;}
+.item-card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.badge{display:inline-flex;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:#FF6B0022;color:var(--orange);border:1px solid #FF6B0044;}
+.step{display:none;}
+.step.active{display:block;}
+.dots{display:flex;gap:5px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);}
+.dot.active{width:20px;border-radius:3px;background:var(--orange);}
+.dot.done{background:var(--success);}
+.alert{padding:10px 14px;border-radius:8px;font-size:12px;line-height:1.5;margin-bottom:12px;}
 .alert-info{background:#3B82F611;border:1px solid #3B82F633;color:#60A5FA;}
-
-/* Photo grid */
+.alert-success{background:#22C55E11;border:1px solid #22C55E33;color:var(--success);}
+.alert-warning{background:#F59E0B11;border:1px solid #F59E0B33;color:var(--warning);}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--orange);color:var(--text);padding:10px 20px;border-radius:8px;font-size:13px;z-index:999;display:none;}
 .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
-.photo-thumb{aspect-ratio:1;border-radius:var(--radius-sm);background:var(--bg2);border:1px solid var(--border);overflow:hidden;position:relative;cursor:pointer;}
+.photo-thumb{aspect-ratio:1;border-radius:8px;overflow:hidden;position:relative;border:1px solid var(--border);}
 .photo-thumb img{width:100%;height:100%;object-fit:cover;}
-.photo-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;color:var(--muted);border:1px dashed var(--border);}
-.photo-add:active{border-color:var(--orange);color:var(--orange);}
-.photo-del{position:absolute;top:4px;right:4px;background:#EF444488;color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-
-/* Checkbox group */
-.cbx-group{display:grid;gap:8px;}
-
-/* Toast */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--orange);color:var(--text);padding:10px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;z-index:999;box-shadow:0 4px 20px #0008;animation:fadeup .2s ease;}
-@keyframes fadeup{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
-
-/* Collapse arrow */
-.arrow-icon{transition:transform .2s;}
-.arrow-icon.open{transform:rotate(180deg);}
-
-/* Submit success screen */
-.success-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:40px 20px;gap:16px;}
-.success-icon{font-size:4rem;animation:bounce .5s ease;}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.photo-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;color:var(--muted);border:1px dashed var(--border);border-radius:8px;aspect-ratio:1;cursor:pointer;background:var(--bg2);}
+.photo-del{position:absolute;top:3px;right:3px;background:#EF4444bb;color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;}
+.success-screen{display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 20px;gap:16px;min-height:60vh;justify-content:center;}
 </style>
 </head>
 <body>
-<div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useRef,useCallback}=React;
 
-// ─── CONSTANTS ──────────────────────────────────────────────────────────────
-const STEPS=['Site','DGH/Tanques','Dispensadores','Civil','Eléctrico','Otros','Enviar'];
-const STEP_ICONS=['🏪','🛢️','⛽','🏗️','⚡','🔍','✅'];
-
-const PRODUCTOS=['DIESEL B5 S-50','GASOHOL PREMIUM','GASOHOL REGULAR','GNV','GLP','SIN PRODUCTO'];
-const MARCAS_DISP=['GILBARCO','WAYNE','TOKHEIM','BENNETT','ASPRO','OTRA'];
-const TIPOS_DISP=['MULTIPRODUCTO','ALTO CAUDAL (DB5)','GNV','GLP','SOLO PRODUCTO'];
-const ESTADOS=['OPERATIVO','FUERA DE SERVICIO','EN MANTENIMIENTO'];
-const CUMPLE_OPTS=['CUMPLE','NO CUMPLE','NO APLICA'];
-const SI_NO=['SÍ','NO','NO APLICA'];
-
-// ─── STORAGE ─────────────────────────────────────────────────────────────────
-const STORAGE_KEY='eds_inspector_draft';
-const saveDraft=(data)=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}};
-const loadDraft=()=>{try{const d=localStorage.getItem(STORAGE_KEY);return d?JSON.parse(d):null;}catch(e){return null;}};
-
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
-const uid=()=>Math.random().toString(36).slice(2,8);
-const newTanque=()=>({id:uid(),nro:'',compartimiento:'1',producto:'DIESEL B5 S-50',galones_dgh:'',galones_campo:'',anio_fab:'',estado:'OPERATIVO',
-  alt_impulsion:'',alt_electrica:'',alt_venteo:'',alt_descarga:'',alt_manhole:'',diam_manhole:'',diam_cuello:'',alt_cuello:'',
-  manguera_dorada:'NO',reservas_elec:'NO',sello_primer_elem:'NO',aterramiento:'NO',telemetria:'NO',enfibrado:'NO',prot_catodica:'NO',
-  valv_sobrellenado:'NO',descarga_tipo:'DIRECTA',venteo_supercruceta:'NO',lineas_tipo:'RIGIDAS',bomba_marca:'',obs:''});
-const newDispensador=()=>({id:uid(),isla:'',nro_disp:'1',tipo:'MULTIPRODUCTO',marca:'GILBARCO',caras:'',producto:'',estado:'OPERATIVO',
-  alt_isla:'',alt_electrica_npt:'',alt_impulsion_npt:'',
-  manguera_dorada:'NO',manguera_placa:'NO',reservas_elec:'NO',sello_atex:'NO',valv_impacto:'NO',barra_anclaje:'NO',aterramiento:'NO',sump_upp:'NO',gabinete_data:'NO',obs:''});
-const newCanopy=()=>({id:uid(),nro:'',dims:'',luminarias_led:'SÍ',luminarias_op:'SÍ',obs:''});
-const newAcceso=()=>({id:uid(),ubicacion:'',tipo:'ENTRADA',ancho:'',angulo:'',angulo_cumple:'CUMPLE',flecha:'NO',estado_pav:'BUENO',obs:''});
-const newTablero=()=>({id:uid(),nombre:'',estado:'OPERATIVO',aterramiento:'SÍ',rotulado:'SÍ',diagrama:'SÍ',directorio:'SÍ',diferencial:'SÍ',obs:''});
-
-const defaultData=()=>({
-  fecha:new Date().toISOString().slice(0,10),
-  elaborado:'',revisado:'',aprobado:'',
-  nombre_site:'',ubicacion:'',codigo:'',tipo_eess:'URBANA',antiguedad:'',
-  ult_intervencion:'',atencion_flotas:'NO',equipos_criticos:'CL',
-  area_terreno:'',area_estacion:'',area_tienda:'',
-  acometida_elec:'SÍ',acometida_agua:'SÍ',facilidad_ingreso:'SÍ',internet:'SÍ',aire_acond:'NO',
-  tanques:[newTanque()],
-  dispensadores:[newDispensador()],
-  canopys:[newCanopy()],
-  accesos:[newAcceso()],
-  tableros:[newTablero()],
-  pavimento_obs:'',sardineles_obs:'',venteos_obs:'',pulsadores_nro:'',pulsadores_obs:'',
-  puzos_aterr:'NO',hidrantes:'NO',grupo_electrogeno:'NO',filtro_agua:'NO',filtro_aire:'NO',
-  compresora:'NO',totem_estado:'BUENO',senia_estado:'BUENO',cilindros_obs:'',
-  llanteria:'NO',lavado:'NO',obs_general:'',
-  fotos_site:[],fotos_tanques:[],fotos_dispensadores:[],fotos_otros:[],
-  slide5_texto:'',
-});
-
-// ─── TINY COMPONENTS ─────────────────────────────────────────────────────────
-const Sel=({label,value,onChange,opts,required})=>(
-  <div className="form-group">
-    {label&&<label>{label}{required&&' *'}</label>}
-    <select value={value} onChange={e=>onChange(e.target.value)}>
-      {opts.map(o=><option key={o.v||o} value={o.v||o}>{o.l||o}</option>)}
-    </select>
-  </div>
-);
-const Inp=({label,value,onChange,placeholder,type='text',required,half})=>(
-  <div className={`form-group${half?' half':''}`}>
-    {label&&<label>{label}{required&&' *'}</label>}
-    <input type={type} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder||''}/>
-  </div>
-);
-const Txt=({label,value,onChange,placeholder})=>(
-  <div className="form-group">
-    {label&&<label>{label}</label>}
-    <textarea value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder||''}/>
-  </div>
-);
-const CumpleRow=({label,value,onChange})=>(
-  <div className="tag-row">
-    <span style={{fontSize:'13px',flex:1}}>{label}</span>
-    <div style={{display:'flex',gap:6}}>
-      {['CUMPLE','NO CUMPLE','N/A'].map(o=>(
-        <button key={o} className={`btn btn-sm ${value===o?'btn-primary':'btn-ghost'}`}
-          style={{padding:'4px 8px',fontSize:'11px'}} onClick={()=>onChange(o)}>{o}</button>
-      ))}
-    </div>
-  </div>
-);
-const SiNoRow=({label,value,onChange,opts=SI_NO})=>(
-  <div className="tag-row">
-    <span style={{fontSize:'13px',flex:1,paddingRight:8}}>{label}</span>
-    <div style={{display:'flex',gap:6,flexShrink:0}}>
-      {opts.map(o=>(
-        <button key={o} className={`btn btn-sm ${value===o?'btn-primary':'btn-ghost'}`}
-          style={{padding:'4px 10px',fontSize:'11px'}} onClick={()=>onChange(o)}>{o}</button>
-      ))}
-    </div>
-  </div>
-);
-const Medida=({label,value,onChange,placeholder='cm'})=>(
-  <div className="form-group">
-    <label>{label}</label>
-    <div style={{display:'flex',gap:6,alignItems:'center'}}>
-      <input type="number" value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder} style={{flex:1}}/>
-      <span style={{color:'var(--muted)',fontSize:'12px',whiteSpace:'nowrap'}}>{placeholder.includes('m')?'cm':'cm'}</span>
-    </div>
-  </div>
-);
-
-// Collapsible item card
-const ItemCard=({title,badge,badgeColor='badge-orange',onDelete,children,defaultOpen=false})=>{
-  const [open,setOpen]=useState(defaultOpen);
-  return(
-    <div className="item-card">
-      <div className="item-card-header" onClick={()=>setOpen(o=>!o)}>
-        <div style={{display:'flex',alignItems:'center',gap:8}}>
-          <span className={`badge ${badgeColor}`}>{badge}</span>
-          <h3 style={{fontSize:'13px'}}>{title}</h3>
-        </div>
-        <div style={{display:'flex',gap:8,alignItems:'center'}}>
-          {onDelete&&<button className="btn btn-sm btn-danger" style={{padding:'3px 8px',fontSize:'11px'}} onClick={e=>{e.stopPropagation();onDelete();}}>✕</button>}
-          <span className={`arrow-icon${open?' open':''}`} style={{color:'var(--muted)',fontSize:'14px'}}>▾</span>
-        </div>
-      </div>
-      {open&&<div className="item-card-body">{children}</div>}
-    </div>
-  );
-};
-
-// Photo uploader
-const PhotoUploader=({photos,onChange,label,tag})=>{
-  const inputRef=useRef();
-  const handleFile=(e)=>{
-    const files=Array.from(e.target.files);
-    files.forEach(f=>{
-      const reader=new FileReader();
-      reader.onload=ev=>onChange([...photos,{id:uid(),src:ev.target.result,tag,caption:''}]);
-      reader.readAsDataURL(f);
-    });
-    e.target.value='';
-  };
-  return(
-    <div className="form-group">
-      {label&&<label>{label}</label>}
-      <input ref={inputRef} type="file" accept="image/*" multiple capture="environment" onChange={handleFile}/>
-      <div className="photo-grid">
-        {photos.map(p=>(
-          <div key={p.id} className="photo-thumb">
-            <img src={p.src} alt="foto"/>
-            <button className="photo-del" onClick={()=>onChange(photos.filter(x=>x.id!==p.id))}>✕</button>
-          </div>
-        ))}
-        {photos.length<12&&(
-          <div className="photo-thumb photo-add" onClick={()=>inputRef.current.click()}>
-            <span style={{fontSize:'24px',opacity:.5}}>+</span>
-            <span>Foto</span>
-          </div>
-        )}
-      </div>
-      {photos.length>0&&<p style={{fontSize:'11px',color:'var(--muted)',marginTop:6}}>{photos.length} foto{photos.length!==1?'s':''} agregada{photos.length!==1?'s':''}</p>}
-    </div>
-  );
-};
-
-// ─── STEP COMPONENTS ─────────────────────────────────────────────────────────
-
-const StepSite=({data,upd})=>(
+<!-- TOP BAR -->
+<div class="top-bar">
   <div>
-    <div className="section-title"><h2>Datos generales del site</h2></div>
-    <div className="form-row">
-      <Inp label="Fecha visita" value={data.fecha} onChange={v=>upd('fecha',v)} type="date"/>
-      <Inp label="Código informe" value={data.codigo} onChange={v=>upd('codigo',v)} placeholder="PE-PRX-..."/>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:18px">⛽</span>
+      <span style="font-weight:800;font-size:14px;letter-spacing:-.01em">EDS INSPECTOR</span>
+      <span class="badge">PRIMAX</span>
     </div>
-    <Inp label="Nombre del site *" value={data.nombre_site} onChange={v=>upd('nombre_site',v)} placeholder="EDS ZORRITOS" required/>
-    <Inp label="Ubicación / Dirección *" value={data.ubicacion} onChange={v=>upd('ubicacion',v)} placeholder="Jr. Cnel. Miguel Baquero 448, Lima" required/>
-    <div className="form-row">
-      <Sel label="Tipo EESS" value={data.tipo_eess} onChange={v=>upd('tipo_eess',v)} opts={['URBANA','CARRETERA']}/>
-      <Sel label="Equipos críticos" value={data.equipos_criticos} onChange={v=>upd('equipos_criticos',v)} opts={['CL','GLP','GNV','CL/GLP','CL/GNV','CL/GLP/GNV']}/>
-    </div>
-    <div className="form-row">
-      <Inp label="Antigüedad EESS" value={data.antiguedad} onChange={v=>upd('antiguedad',v)} placeholder="3 años"/>
-      <Inp label="Última intervención" value={data.ult_intervencion} onChange={v=>upd('ult_intervencion',v)} placeholder="2020, GLP"/>
-    </div>
-    <div className="divider"/>
-    <div className="section-title"><h2>Áreas (m²)</h2></div>
-    <div className="form-row-3">
-      <Inp label="Terreno m²" value={data.area_terreno} onChange={v=>upd('area_terreno',v)} type="number" placeholder="1009"/>
-      <Inp label="Estación m²" value={data.area_estacion} onChange={v=>upd('area_estacion',v)} type="number" placeholder="1009"/>
-      <Inp label="Tienda m²" value={data.area_tienda} onChange={v=>upd('area_tienda',v)} type="number" placeholder="47"/>
-    </div>
-    <div className="divider"/>
-    <div className="section-title"><h2>Facilidades técnicas</h2></div>
-    <div style={{background:'var(--bg)',borderRadius:'var(--radius-sm)',padding:'12px 16px',border:'1px solid var(--border)'}}>
-      <SiNoRow label="Acometida eléctrica" value={data.acometida_elec} onChange={v=>upd('acometida_elec',v)} opts={['SÍ','NO']}/>
-      <SiNoRow label="Acometida agua/desagüe" value={data.acometida_agua} onChange={v=>upd('acometida_agua',v)} opts={['SÍ','NO']}/>
-      <SiNoRow label="Facilidades de ingreso" value={data.facilidad_ingreso} onChange={v=>upd('facilidad_ingreso',v)} opts={['SÍ','NO']}/>
-      <SiNoRow label="Conexión a internet" value={data.internet} onChange={v=>upd('internet',v)} opts={['SÍ','NO']}/>
-      <SiNoRow label="Aire acondicionado" value={data.aire_acond} onChange={v=>upd('aire_acond',v)} opts={['SÍ','NO']}/>
-      <SiNoRow label="Atención a flotas" value={data.atencion_flotas} onChange={v=>upd('atencion_flotas',v)} opts={['SÍ','NO']}/>
-    </div>
-    <div className="divider"/>
-    <div className="section-title"><h2>Elaboración del informe</h2></div>
-    <div className="form-row">
-      <Inp label="Elaborado por" value={data.elaborado} onChange={v=>upd('elaborado',v)} placeholder="Nombre"/>
-      <Inp label="Revisado por" value={data.revisado} onChange={v=>upd('revisado',v)} placeholder="Nombre"/>
-    </div>
-    <Inp label="Aprobado por" value={data.aprobado} onChange={v=>upd('aprobado',v)} placeholder="Nombre"/>
+    <div id="site-name-bar" style="font-size:11px;color:var(--muted);margin-top:2px;"></div>
   </div>
-);
+  <div class="dots" id="dots"></div>
+</div>
 
-const StepDGH=({data,upd})=>{
-  const addTk=()=>upd('tanques',[...data.tanques,newTanque()]);
-  const delTk=(id)=>upd('tanques',data.tanques.filter(t=>t.id!==id));
-  const updTk=(id,k,v)=>upd('tanques',data.tanques.map(t=>t.id===id?{...t,[k]:v}:t));
-  return(
-    <div>
-      <div className="section-title"><h2>Ficha DGH — Tanques</h2></div>
-      <div className="alert alert-info" style={{marginBottom:16}}>
-        Registra cada tanque. Los compartimientos de un mismo tanque físico van como ítems separados.
-      </div>
-      {data.tanques.map((tk,i)=>(
-        <ItemCard key={tk.id} title={tk.nro?`TK N°${tk.nro} — ${tk.producto}`:(`Tanque ${i+1}`)}
-          badge={`TK ${i+1}`} onDelete={data.tanques.length>1?()=>delTk(tk.id):null} defaultOpen={i===0}>
-          <div className="form-row">
-            <Inp label="N° Tanque" value={tk.nro} onChange={v=>updTk(tk.id,'nro',v)} placeholder="1"/>
-            <Inp label="N° Compartimiento" value={tk.compartimiento} onChange={v=>updTk(tk.id,'compartimiento',v)} placeholder="1"/>
-          </div>
-          <div className="form-row">
-            <Sel label="Producto" value={tk.producto} onChange={v=>updTk(tk.id,'producto',v)} opts={PRODUCTOS}/>
-            <Sel label="Estado" value={tk.estado} onChange={v=>updTk(tk.id,'estado',v)} opts={ESTADOS}/>
-          </div>
-          <div className="form-row">
-            <Inp label="Galones (DGH)" value={tk.galones_dgh} onChange={v=>updTk(tk.id,'galones_dgh',v)} type="number" placeholder="8000"/>
-            <Inp label="Galones (campo)" value={tk.galones_campo} onChange={v=>updTk(tk.id,'galones_campo',v)} type="number" placeholder="8000"/>
-          </div>
-          <Inp label="Año fabricación" value={tk.anio_fab} onChange={v=>updTk(tk.id,'anio_fab',v)} type="number" placeholder="1997"/>
-          <div className="divider"/>
-          <h3 style={{marginBottom:12,fontSize:'12px',color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em'}}>Alturas (cm)</h3>
-          <div className="form-row">
-            <Inp label="Línea impulsión" value={tk.alt_impulsion} onChange={v=>updTk(tk.id,'alt_impulsion',v)} type="number" placeholder="cm"/>
-            <Inp label="Línea eléctrica" value={tk.alt_electrica} onChange={v=>updTk(tk.id,'alt_electrica',v)} type="number" placeholder="cm"/>
-          </div>
-          <div className="form-row">
-            <Inp label="Línea venteo" value={tk.alt_venteo} onChange={v=>updTk(tk.id,'alt_venteo',v)} type="number" placeholder="cm"/>
-            <Inp label="Línea descarga" value={tk.alt_descarga} onChange={v=>updTk(tk.id,'alt_descarga',v)} type="number" placeholder="cm"/>
-          </div>
-          <div className="form-row">
-            <Inp label="Altura manhole" value={tk.alt_manhole} onChange={v=>updTk(tk.id,'alt_manhole',v)} type="number" placeholder="cm"/>
-            <Inp label="Diámetro manhole" value={tk.diam_manhole} onChange={v=>updTk(tk.id,'diam_manhole',v)} type="number" placeholder="cm"/>
-          </div>
-          <div className="form-row">
-            <Inp label="Diám. cuello manhole" value={tk.diam_cuello} onChange={v=>updTk(tk.id,'diam_cuello',v)} type="number" placeholder="cm"/>
-            <Inp label="Alt. cuello manhole" value={tk.alt_cuello} onChange={v=>updTk(tk.id,'alt_cuello',v)} type="number" placeholder="cm"/>
-          </div>
-          <div className="divider"/>
-          <h3 style={{marginBottom:12,fontSize:'12px',color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em'}}>Checklist mecánico</h3>
-          <div style={{background:'var(--bg)',borderRadius:'var(--radius-sm)',padding:'10px 14px',border:'1px solid var(--border)'}}>
-            <SiNoRow label="Manguera flexible eléctrica dorada" value={tk.manguera_dorada} onChange={v=>updTk(tk.id,'manguera_dorada',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Reservas eléctricas en buzón" value={tk.reservas_elec} onChange={v=>updTk(tk.id,'reservas_elec',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Sello ATEX como primer elemento (bomba)" value={tk.sello_primer_elem} onChange={v=>updTk(tk.id,'sello_primer_elem',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Aterramiento" value={tk.aterramiento} onChange={v=>updTk(tk.id,'aterramiento',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Telemetría" value={tk.telemetria} onChange={v=>updTk(tk.id,'telemetria',v)} opts={['SÍ','NO','N/A']}/>
-            <SiNoRow label="Tanque enfibrado" value={tk.enfibrado} onChange={v=>updTk(tk.id,'enfibrado',v)} opts={['SÍ','NO','N/A']}/>
-            <SiNoRow label="Protección catódica" value={tk.prot_catodica} onChange={v=>updTk(tk.id,'prot_catodica',v)} opts={['SÍ','NO','N/A']}/>
-            <SiNoRow label="Válvula de sobrellenado ⚠️" value={tk.valv_sobrellenado} onChange={v=>updTk(tk.id,'valv_sobrellenado',v)} opts={['SÍ','NO','N/A']}/>
-            <SiNoRow label="Supercruceta en venteo" value={tk.venteo_supercruceta} onChange={v=>updTk(tk.id,'venteo_supercruceta',v)} opts={['SÍ','NO']}/>
-          </div>
-          <div className="form-row" style={{marginTop:12}}>
-            <Sel label="Tipo descarga" value={tk.descarga_tipo} onChange={v=>updTk(tk.id,'descarga_tipo',v)} opts={['DIRECTA','REMOTA']}/>
-            <Sel label="Líneas mecánicas" value={tk.lineas_tipo} onChange={v=>updTk(tk.id,'lineas_tipo',v)} opts={['RÍGIDAS','HDPE','MIXTAS']}/>
-          </div>
-          <Inp label="Marca/modelo bomba" value={tk.bomba_marca} onChange={v=>updTk(tk.id,'bomba_marca',v)} placeholder="RED JACKET, FRANKLIN, etc."/>
-          <Txt label="Observaciones" value={tk.obs} onChange={v=>updTk(tk.id,'obs',v)} placeholder="Notas adicionales del tanque..."/>
-        </ItemCard>
-      ))}
-      <button className="btn btn-secondary btn-full" onClick={addTk} style={{marginTop:4}}>
-        + Agregar tanque / compartimiento
-      </button>
-    </div>
-  );
-};
+<!-- PROGRESS -->
+<div class="progress"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
 
-const StepDispensadores=({data,upd})=>{
-  const addD=()=>upd('dispensadores',[...data.dispensadores,newDispensador()]);
-  const delD=(id)=>upd('dispensadores',data.dispensadores.filter(d=>d.id!==id));
-  const updD=(id,k,v)=>upd('dispensadores',data.dispensadores.map(d=>d.id===id?{...d,[k]:v}:d));
-  return(
-    <div>
-      <div className="section-title"><h2>Dispensadores</h2></div>
-      {data.dispensadores.map((d,i)=>(
-        <ItemCard key={d.id}
-          title={d.isla?`Isla ${d.isla} — ${d.tipo} — ${d.marca}`:(`Dispensador ${i+1}`)}
-          badge={`DISP ${i+1}`} onDelete={data.dispensadores.length>1?()=>delD(d.id):null} defaultOpen={i===0}>
-          <div className="form-row">
-            <Inp label="N° Isla" value={d.isla} onChange={v=>updD(d.id,'isla',v)} placeholder="1"/>
-            <Inp label="N° Dispensador" value={d.nro_disp} onChange={v=>updD(d.id,'nro_disp',v)} placeholder="1"/>
-          </div>
-          <div className="form-row">
-            <Sel label="Tipo *" value={d.tipo} onChange={v=>updD(d.id,'tipo',v)} opts={TIPOS_DISP}/>
-            <Sel label="Marca *" value={d.marca} onChange={v=>updD(d.id,'marca',v)} opts={MARCAS_DISP}/>
-          </div>
-          <div className="form-row">
-            <Inp label="Caras (ej: 1 y 2)" value={d.caras} onChange={v=>updD(d.id,'caras',v)} placeholder="1 y 2"/>
-            <Sel label="Estado" value={d.estado} onChange={v=>updD(d.id,'estado',v)} opts={ESTADOS}/>
-          </div>
-          <Inp label="Producto(s)" value={d.producto} onChange={v=>updD(d.id,'producto',v)} placeholder="DIESEL B5 S-50, PREMIUM"/>
-          <div className="divider"/>
-          <h3 style={{marginBottom:12,fontSize:'12px',color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em'}}>Alturas NPT (cm)</h3>
-          <div className="form-row-3">
-            <Inp label="Isla" value={d.alt_isla} onChange={v=>updD(d.id,'alt_isla',v)} type="number" placeholder="cm"/>
-            <Inp label="Línea eléctrica" value={d.alt_electrica_npt} onChange={v=>updD(d.id,'alt_electrica_npt',v)} type="number" placeholder="cm"/>
-            <Inp label="Línea impulsión" value={d.alt_impulsion_npt} onChange={v=>updD(d.id,'alt_impulsion_npt',v)} type="number" placeholder="cm"/>
-          </div>
-          <div className="divider"/>
-          <h3 style={{marginBottom:12,fontSize:'12px',color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.06em'}}>Checklist mecánico</h3>
-          <div style={{background:'var(--bg)',borderRadius:'var(--radius-sm)',padding:'10px 14px',border:'1px solid var(--border)'}}>
-            <SiNoRow label="Manguera eléctrica dorada con placa" value={d.manguera_dorada} onChange={v=>updD(d.id,'manguera_dorada',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Placa identificación manguera data" value={d.manguera_placa} onChange={v=>updD(d.id,'manguera_placa',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Reservas eléctricas" value={d.reservas_elec} onChange={v=>updD(d.id,'reservas_elec',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Sello ATEX como primer elemento" value={d.sello_atex} onChange={v=>updD(d.id,'sello_atex',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Válvulas de impacto (3 unid.)" value={d.valv_impacto} onChange={v=>updD(d.id,'valv_impacto',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Barra de anclaje empotrada" value={d.barra_anclaje} onChange={v=>updD(d.id,'barra_anclaje',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Cable de aterramiento" value={d.aterramiento} onChange={v=>updD(d.id,'aterramiento',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Buzón SUMP UPP" value={d.sump_upp} onChange={v=>updD(d.id,'sump_upp',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Data para gabinete de venta" value={d.gabinete_data} onChange={v=>updD(d.id,'gabinete_data',v)} opts={['SÍ','NO']}/>
-          </div>
-          <Txt label="Observaciones" value={d.obs} onChange={v=>updD(d.id,'obs',v)} placeholder="Notas adicionales..."/>
-        </ItemCard>
-      ))}
-      <button className="btn btn-secondary btn-full" onClick={addD} style={{marginTop:4}}>
-        + Agregar dispensador
-      </button>
-    </div>
-  );
-};
-
-const StepCivil=({data,upd})=>{
-  const addC=()=>upd('canopys',[...data.canopys,newCanopy()]);
-  const delC=(id)=>upd('canopys',data.canopys.filter(c=>c.id!==id));
-  const updC=(id,k,v)=>upd('canopys',data.canopys.map(c=>c.id===id?{...c,[k]:v}:c));
-  const addA=()=>upd('accesos',[...data.accesos,newAcceso()]);
-  const delA=(id)=>upd('accesos',data.accesos.filter(a=>a.id!==id));
-  const updA=(id,k,v)=>upd('accesos',data.accesos.map(a=>a.id===id?{...a,[k]:v}:a));
-  return(
-    <div>
-      <div className="section-title"><h2>Civil — Techo canopy</h2></div>
-      {data.canopys.map((c,i)=>(
-        <ItemCard key={c.id} title={c.nro?`Canopy ${c.nro}${c.dims?` — ${c.dims}`:''}`:(`Canopy ${i+1}`)}
-          badge={`C${i+1}`} onDelete={data.canopys.length>1?()=>delC(c.id):null} defaultOpen={i===0}>
-          <div className="form-row">
-            <Inp label="N° Canopy" value={c.nro} onChange={v=>updC(c.id,'nro',v)} placeholder="1"/>
-            <Inp label="Dimensiones" value={c.dims} onChange={v=>updC(c.id,'dims',v)} placeholder="23.2 m x 8.10 m"/>
-          </div>
-          <div style={{background:'var(--bg)',borderRadius:'var(--radius-sm)',padding:'10px 14px',border:'1px solid var(--border)'}}>
-            <SiNoRow label="Luminarias LED" value={c.luminarias_led} onChange={v=>updC(c.id,'luminarias_led',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Luminarias operativas" value={c.luminarias_op} onChange={v=>updC(c.id,'luminarias_op',v)} opts={['SÍ','NO']}/>
-          </div>
-          <Txt label="Observaciones (canaletas, flashing, friso, etc.)" value={c.obs} onChange={v=>updC(c.id,'obs',v)} placeholder="Estado general del canopy..."/>
-        </ItemCard>
-      ))}
-      <button className="btn btn-secondary btn-full" onClick={addC} style={{marginBottom:20}}>
-        + Agregar canopy
-      </button>
-
-      <div className="section-title"><h2>Accesos</h2></div>
-      {data.accesos.map((a,i)=>(
-        <ItemCard key={a.id} title={a.ubicacion||(`Acceso ${i+1}`)} badge={a.tipo||'ACCESO'}
-          onDelete={data.accesos.length>1?()=>delA(a.id):null} defaultOpen={i===0}>
-          <Inp label="Ubicación (calle / jirón)" value={a.ubicacion} onChange={v=>updA(a.id,'ubicacion',v)} placeholder="Jr. Cnel. Miguel Baquero"/>
-          <div className="form-row">
-            <Sel label="Tipo" value={a.tipo} onChange={v=>updA(a.id,'tipo',v)} opts={['ENTRADA','SALIDA','ENTRADA/SALIDA']}/>
-            <Inp label="Ancho (m)" value={a.ancho} onChange={v=>updA(a.id,'ancho',v)} type="number" placeholder="12.16"/>
-          </div>
-          <div style={{background:'var(--bg)',borderRadius:'var(--radius-sm)',padding:'10px 14px',border:'1px solid var(--border)'}}>
-            <SiNoRow label="Ángulo 45°" value={a.angulo_cumple} onChange={v=>updA(a.id,'angulo_cumple',v)} opts={['CUMPLE','NO CUMPLE']}/>
-            <SiNoRow label="Flecha de señalización" value={a.flecha} onChange={v=>updA(a.id,'flecha',v)} opts={['SÍ','NO']}/>
-          </div>
-          <Sel label="Estado pavimento acceso" value={a.estado_pav} onChange={v=>updA(a.id,'estado_pav',v)}
-            opts={['BUENO','REGULAR','MALO — fisuras/grietas','MALO — pérdida de superficie']}/>
-          <Txt label="Observaciones" value={a.obs} onChange={v=>updA(a.id,'obs',v)}/>
-        </ItemCard>
-      ))}
-      <button className="btn btn-secondary btn-full" onClick={addA} style={{marginBottom:20}}>
-        + Agregar acceso
-      </button>
-
-      <div className="section-title"><h2>Pavimento general</h2></div>
-      <Txt label="Observaciones del pavimento (patio de maniobras)" value={data.pavimento_obs}
-        onChange={v=>upd('pavimento_obs',v)} placeholder="Pérdida de superficie, grietas, fisuras, desniveles, parches, pintura señalización..."/>
-
-      <div className="section-title" style={{marginTop:16}}><h2>Sardineles</h2></div>
-      <Txt label="Observaciones de sardineles" value={data.sardineles_obs}
-        onChange={v=>upd('sardineles_obs',v)} placeholder="Medidas, estado, fisuras, pérdida de superficie..."/>
-
-      <div className="section-title" style={{marginTop:16}}><h2>Venteos</h2></div>
-      <Txt label="Observaciones venteos / pulsadores" value={data.venteos_obs}
-        onChange={v=>upd('venteos_obs',v)} placeholder="Supercrucetas, manifoliados, estructura soporte, dimensiones murete..."/>
-      <div className="form-row">
-        <Inp label="N° pulsadores emergencia" value={data.pulsadores_nro} onChange={v=>upd('pulsadores_nro',v)} type="number" placeholder="2"/>
-        <div/>
-      </div>
-      <Txt label="Observaciones pulsadores" value={data.pulsadores_obs} onChange={v=>upd('pulsadores_obs',v)} placeholder="Gabinete, luna protección, ubicación..."/>
-    </div>
-  );
-};
-
-const StepElectrico=({data,upd})=>{
-  const addT=()=>upd('tableros',[...data.tableros,newTablero()]);
-  const delT=(id)=>upd('tableros',data.tableros.filter(t=>t.id!==id));
-  const updT=(id,k,v)=>upd('tableros',data.tableros.map(t=>t.id===id?{...t,[k]:v}:t));
-  return(
-    <div>
-      <div className="section-title"><h2>Tableros eléctricos</h2></div>
-      {data.tableros.map((t,i)=>(
-        <ItemCard key={t.id} title={t.nombre||(`Tablero ${i+1}`)} badge={`T${i+1}`}
-          onDelete={data.tableros.length>1?()=>delT(t.id):null} defaultOpen={i===0}>
-          <div className="form-row">
-            <Inp label="Nombre tablero" value={t.nombre} onChange={v=>updT(t.id,'nombre',v)} placeholder="TABLERO GENERAL"/>
-            <Sel label="Estado" value={t.estado} onChange={v=>updT(t.id,'estado',v)} opts={ESTADOS}/>
-          </div>
-          <div style={{background:'var(--bg)',borderRadius:'var(--radius-sm)',padding:'10px 14px',border:'1px solid var(--border)'}}>
-            <SiNoRow label="Cable de aterramiento" value={t.aterramiento} onChange={v=>updT(t.id,'aterramiento',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Rotulado" value={t.rotulado} onChange={v=>updT(t.id,'rotulado',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Diagrama unifilar" value={t.diagrama} onChange={v=>updT(t.id,'diagrama',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Directorio" value={t.directorio} onChange={v=>updT(t.id,'directorio',v)} opts={['SÍ','NO']}/>
-            <SiNoRow label="Llaves diferenciales/térmicas" value={t.diferencial} onChange={v=>updT(t.id,'diferencial',v)} opts={['SÍ','NO']}/>
-          </div>
-          <Txt label="Observaciones" value={t.obs} onChange={v=>updT(t.id,'obs',v)}/>
-        </ItemCard>
-      ))}
-      <button className="btn btn-secondary btn-full" onClick={addT} style={{marginBottom:20}}>
-        + Agregar tablero
-      </button>
-      <div className="section-title"><h2>Pozos a tierra</h2></div>
-      <div style={{background:'var(--bg)',borderRadius:'var(--radius-sm)',padding:'10px 14px',border:'1px solid var(--border)'}}>
-        <SiNoRow label="Buzones pozo tierra en zona tanques" value={data.puzos_aterr} onChange={v=>upd('puzos_aterr',v)} opts={['SÍ','NO']}/>
-        <SiNoRow label="Varilla cobre + cable + cocodrilo" value={data.puzos_aterr} onChange={v=>upd('puzos_aterr',v)} opts={['SÍ','NO']}/>
-      </div>
-    </div>
-  );
-};
-
-const StepOtros=({data,upd})=>(
+<!-- STEP HEADER -->
+<div class="step-header">
+  <span id="step-icon" style="font-size:24px">🏪</span>
   <div>
-    <div className="section-title"><h2>Servicios e infraestructura</h2></div>
-    <div style={{background:'var(--bg)',borderRadius:'var(--radius-sm)',padding:'10px 14px',border:'1px solid var(--border)'}}>
-      <SiNoRow label="Hidrantes" value={data.hidrantes} onChange={v=>upd('hidrantes',v)} opts={['SÍ','NO']}/>
-      <SiNoRow label="Grupo electrógeno" value={data.grupo_electrogeno} onChange={v=>upd('grupo_electrogeno',v)} opts={['SÍ','NO']}/>
-      <SiNoRow label="Filtro de agua" value={data.filtro_agua} onChange={v=>upd('filtro_agua',v)} opts={['SÍ','NO']}/>
-      <SiNoRow label="Filtro de aire" value={data.filtro_aire} onChange={v=>upd('filtro_aire',v)} opts={['SÍ','NO']}/>
-      <SiNoRow label="Compresora de aire" value={data.compresora} onChange={v=>upd('compresora',v)} opts={['SÍ','NO']}/>
-      <SiNoRow label="Llantería" value={data.llanteria} onChange={v=>upd('llanteria',v)} opts={['SÍ','NO']}/>
-      <SiNoRow label="Zona de lavado" value={data.lavado} onChange={v=>upd('lavado',v)} opts={['SÍ','NO']}/>
-    </div>
-    <div className="divider"/>
-    <div className="section-title"><h2>Señalización y equipamiento</h2></div>
-    <Sel label="Estado tótem / pizarra de precios" value={data.totem_estado} onChange={v=>upd('totem_estado',v)}
-      opts={['BUENO','REGULAR','MALO','NO APLICA']}/>
-    <Sel label="Estado señalización" value={data.senia_estado} onChange={v=>upd('senia_estado',v)}
-      opts={['BUENO','REGULAR','MALO']}/>
-    <Txt label="Observaciones cilindros residuos peligrosos" value={data.cilindros_obs}
-      onChange={v=>upd('cilindros_obs',v)} placeholder="Enrejados, estado, ubicación..."/>
-    <div className="divider"/>
-    <div className="section-title"><h2>Texto slide 5 — Fotos resumen</h2></div>
-    <div className="alert alert-info" style={{marginBottom:12}}>
-      Este texto aparecerá debajo de las fotos en el slide 5 del informe (resumen visual del site).
-    </div>
-    <Txt label="Descripción breve para slide 5" value={data.slide5_texto}
-      onChange={v=>upd('slide5_texto',v)}
-      placeholder={`Ej: ${data.dispensadores.length} dispensadores CL | ${data.tanques.length} tanques | Techo canopy ${data.canopys.length} tramos\nEstación ${data.tipo_eess||'urbana'} con equipos críticos: ${data.equipos_criticos||'CL'}`}/>
-    <div className="divider"/>
-    <div className="section-title"><h2>Observaciones generales</h2></div>
-    <Txt label="Notas adicionales del informe" value={data.obs_general}
-      onChange={v=>upd('obs_general',v)} placeholder="Cualquier observación relevante no capturada en secciones anteriores..."/>
+    <div id="step-num" style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Paso 1 de 7</div>
+    <h1 id="step-title">Site</h1>
   </div>
-);
+</div>
 
-const StepFotos=({data,upd,onSubmit,submitting,submitted})=>{
-  const updFotos=(key,photos)=>upd(key,photos);
-  if(submitted) return(
-    <div className="success-screen">
-      <div className="success-icon">✅</div>
-      <h1>¡Informe enviado!</h1>
-      <p style={{color:'var(--muted)',textAlign:'center'}}>
-        Los datos de <strong style={{color:'var(--text)'}}>{data.nombre_site||'el site'}</strong> fueron guardados correctamente en Google Sheets.
-      </p>
-      <div className="alert alert-success" style={{width:'100%'}}>
-        El supervisor puede revisar los datos y generar el PPT desde el panel de control.
-      </div>
-      <div style={{marginTop:8,padding:'12px 16px',background:'var(--card)',borderRadius:'var(--radius)',border:'1px solid var(--border)',width:'100%'}}>
-        <p style={{fontSize:'12px',color:'var(--muted)',marginBottom:8}}>RESUMEN</p>
-        <p style={{fontSize:'13px'}}>🏪 {data.nombre_site||'—'}</p>
-        <p style={{fontSize:'13px'}}>🛢️ {data.tanques.length} tanque(s)</p>
-        <p style={{fontSize:'13px'}}>⛽ {data.dispensadores.length} dispensador(es)</p>
-        <p style={{fontSize:'13px'}}>📸 {(data.fotos_site.length+data.fotos_tanques.length+data.fotos_dispensadores.length+data.fotos_otros.length)} foto(s) total</p>
-      </div>
-    </div>
-  );
-  return(
-    <div>
-      <div className="section-title"><h2>Fotos del site</h2></div>
-      <PhotoUploader photos={data.fotos_site} label="Foto panorámica (slide 2)" tag="site"
-        onChange={p=>updFotos('fotos_site',p)}/>
-      <PhotoUploader photos={data.fotos_tanques} label="Fotos de tanques (slides DGH)" tag="tanques"
-        onChange={p=>updFotos('fotos_tanques',p)}/>
-      <PhotoUploader photos={data.fotos_dispensadores} label="Fotos de dispensadores" tag="dispensadores"
-        onChange={p=>updFotos('fotos_dispensadores',p)}/>
-      <PhotoUploader photos={data.fotos_otros} label="Otras fotos (civil, eléctrico, etc.)" tag="otros"
-        onChange={p=>updFotos('fotos_otros',p)}/>
-      <div className="divider"/>
-      <div className="section-title"><h2>Revisión final</h2></div>
-      <div style={{background:'var(--bg)',borderRadius:'var(--radius)',padding:'16px',border:'1px solid var(--border)',marginBottom:16}}>
-        <div className="tag-row"><span style={{fontSize:'13px'}}>Site</span><strong style={{fontSize:'13px'}}>{data.nombre_site||'—'}</strong></div>
-        <div className="tag-row"><span style={{fontSize:'13px'}}>Fecha</span><strong style={{fontSize:'13px'}}>{data.fecha||'—'}</strong></div>
-        <div className="tag-row"><span style={{fontSize:'13px'}}>Tanques</span><span className="badge badge-orange">{data.tanques.length}</span></div>
-        <div className="tag-row"><span style={{fontSize:'13px'}}>Dispensadores</span><span className="badge badge-orange">{data.dispensadores.length}</span></div>
-        <div className="tag-row"><span style={{fontSize:'13px'}}>Canopys</span><span className="badge badge-orange">{data.canopys.length}</span></div>
-        <div className="tag-row"><span style={{fontSize:'13px'}}>Fotos totales</span><span className="badge badge-green">{data.fotos_site.length+data.fotos_tanques.length+data.fotos_dispensadores.length+data.fotos_otros.length}</span></div>
-        <div className="tag-row"><span style={{fontSize:'13px'}}>Elaborado por</span><strong style={{fontSize:'13px'}}>{data.elaborado||'—'}</strong></div>
-      </div>
-      <div className="alert alert-warning" style={{marginBottom:16}}>
-        ⚠️ Al enviar se guardarán los datos en Google Sheets. Las fotos se guardan localmente y deben adjuntarse por separado.
-      </div>
-      <button className="btn btn-primary btn-full" style={{padding:'16px',fontSize:'16px'}}
-        onClick={onSubmit} disabled={submitting||!data.nombre_site}>
-        {submitting?'Enviando...':'📤 Enviar informe al sistema'}
-      </button>
-      {!data.nombre_site&&<p style={{fontSize:'12px',color:'var(--danger)',textAlign:'center',marginTop:8}}>Completa el nombre del site para enviar</p>}
-    </div>
-  );
-};
+<div class="content">
 
-// ─── MAIN APP ─────────────────────────────────────────────────────────────────
-const SHEETS_URL=''; // Se configura con la URL del Apps Script Web App
+<!-- STEP 1: SITE -->
+<div class="step active" id="step-0">
+  <div class="section-hdr"><h2>Datos generales del site</h2></div>
+  <div class="row2">
+    <div class="fg"><label>Fecha visita</label><input type="date" id="fecha"/></div>
+    <div class="fg"><label>Código informe</label><input type="text" id="codigo" placeholder="PE-PRX-..."/></div>
+  </div>
+  <div class="fg"><label>Nombre del site *</label><input type="text" id="nombre_site" placeholder="EDS ZORRITOS" oninput="document.getElementById('site-name-bar').textContent=this.value"/></div>
+  <div class="fg"><label>Ubicación / Dirección *</label><input type="text" id="ubicacion" placeholder="Jr. Cnel. Miguel Baquero 448, Lima"/></div>
+  <div class="row2">
+    <div class="fg"><label>Tipo EESS</label>
+      <select id="tipo_eess"><option>URBANA</option><option>CARRETERA</option></select></div>
+    <div class="fg"><label>Equipos críticos</label>
+      <select id="equipos_criticos"><option>CL</option><option>GLP</option><option>GNV</option><option>CL/GLP</option><option>CL/GNV</option><option>CL/GLP/GNV</option></select></div>
+  </div>
+  <div class="row2">
+    <div class="fg"><label>Antigüedad EESS</label><input type="text" id="antiguedad" placeholder="3 años"/></div>
+    <div class="fg"><label>Última intervención</label><input type="text" id="ult_intervencion" placeholder="2020, GLP"/></div>
+  </div>
+  <div class="divider"/>
+  <div class="section-hdr"><h2>Áreas (m²)</h2></div>
+  <div class="row3">
+    <div class="fg"><label>Terreno</label><input type="number" id="area_terreno" placeholder="1009"/></div>
+    <div class="fg"><label>Estación</label><input type="number" id="area_estacion" placeholder="1009"/></div>
+    <div class="fg"><label>Tienda</label><input type="number" id="area_tienda" placeholder="47"/></div>
+  </div>
+  <div class="divider"/>
+  <div class="section-hdr"><h2>Facilidades técnicas</h2></div>
+  <div class="card" style="padding:10px 14px;">
+    <div id="fac-fields"></div>
+  </div>
+  <div class="divider"/>
+  <div class="section-hdr"><h2>Elaboración</h2></div>
+  <div class="row2">
+    <div class="fg"><label>Elaborado por</label><input type="text" id="elaborado" placeholder="Nombre"/></div>
+    <div class="fg"><label>Revisado por</label><input type="text" id="revisado" placeholder="Nombre"/></div>
+  </div>
+  <div class="fg"><label>Aprobado por</label><input type="text" id="aprobado" placeholder="Nombre"/></div>
+</div>
 
-export default function App(){
-  const [step,setStep]=useState(0);
-  const [data,setData]=useState(()=>loadDraft()||defaultData());
-  const [submitting,setSubmitting]=useState(false);
-  const [submitted,setSubmitted]=useState(false);
-  const [toast,setToast]=useState(null);
+<!-- STEP 2: TANQUES -->
+<div class="step" id="step-1">
+  <div class="section-hdr"><h2>Ficha DGH — Tanques</h2></div>
+  <div class="alert alert-info">Agrega un ítem por cada compartimiento de tanque.</div>
+  <div id="tanques-list"></div>
+  <button class="btn btn-secondary" onclick="addTanque()" style="margin-top:4px">+ Agregar tanque / compartimiento</button>
+</div>
 
-  // Autosave
-  useEffect(()=>{saveDraft(data);},[data]);
+<!-- STEP 3: DISPENSADORES -->
+<div class="step" id="step-2">
+  <div class="section-hdr"><h2>Dispensadores</h2></div>
+  <div id="dispensadores-list"></div>
+  <button class="btn btn-secondary" onclick="addDispensador()" style="margin-top:4px">+ Agregar dispensador</button>
+</div>
 
-  const upd=(k,v)=>setData(d=>({...d,[k]:v}));
-  const showToast=(msg,ms=2500)=>{setToast(msg);setTimeout(()=>setToast(null),ms);};
+<!-- STEP 4: CIVIL -->
+<div class="step" id="step-3">
+  <div class="section-hdr"><h2>Canopy</h2></div>
+  <div id="canopys-list"></div>
+  <button class="btn btn-secondary" onclick="addCanopy()" style="margin-bottom:16px">+ Agregar canopy</button>
+  <div class="section-hdr"><h2>Accesos</h2></div>
+  <div id="accesos-list"></div>
+  <button class="btn btn-secondary" onclick="addAcceso()" style="margin-bottom:16px">+ Agregar acceso</button>
+  <div class="section-hdr"><h2>Pavimento y otros</h2></div>
+  <div class="fg"><label>Observaciones pavimento</label><textarea id="pavimento_obs" placeholder="Fisuras, grietas, parches, desniveles..."></textarea></div>
+  <div class="fg"><label>Observaciones sardineles</label><textarea id="sardineles_obs" placeholder="Estado, medidas, fisuras..."></textarea></div>
+  <div class="fg"><label>Observaciones venteos</label><textarea id="venteos_obs" placeholder="Supercrucetas, estructura soporte..."></textarea></div>
+  <div class="row2">
+    <div class="fg"><label>N° pulsadores emergencia</label><input type="number" id="pulsadores_nro" placeholder="2"/></div>
+    <div></div>
+  </div>
+  <div class="fg"><label>Obs. pulsadores</label><textarea id="pulsadores_obs" placeholder="Gabinete, luna protección..."></textarea></div>
+</div>
 
-  const goNext=()=>{
-    if(step===0&&!data.nombre_site){showToast('⚠️ Ingresa el nombre del site');return;}
-    setStep(s=>Math.min(s+1,STEPS.length-1));
-    window.scrollTo({top:0,behavior:'smooth'});
-  };
-  const goPrev=()=>{setStep(s=>Math.max(s-1,0));window.scrollTo({top:0,behavior:'smooth'});};
+<!-- STEP 5: ELÉCTRICO -->
+<div class="step" id="step-4">
+  <div class="section-hdr"><h2>Tableros eléctricos</h2></div>
+  <div id="tableros-list"></div>
+  <button class="btn btn-secondary" onclick="addTablero()" style="margin-bottom:16px">+ Agregar tablero</button>
+  <div class="section-hdr"><h2>Pozos a tierra</h2></div>
+  <div class="card" style="padding:10px 14px;" id="pozos-fields"></div>
+</div>
 
-  const handleSubmit=async()=>{
-    setSubmitting(true);
-    // Prepare payload (without photo data for Sheets — photos are handled separately)
-    const payload={...data,fotos_site:[],fotos_tanques:[],fotos_dispensadores:[],fotos_otros:[],
-      fotos_count:data.fotos_site.length+data.fotos_tanques.length+data.fotos_dispensadores.length+data.fotos_otros.length,
-      tanques_json:JSON.stringify(data.tanques),
-      dispensadores_json:JSON.stringify(data.dispensadores),
-      canopys_json:JSON.stringify(data.canopys),
-      accesos_json:JSON.stringify(data.accesos),
-      tableros_json:JSON.stringify(data.tableros),
-      submitted_at:new Date().toISOString()
-    };
-    try{
-      if(SHEETS_URL){
-        await fetch(SHEETS_URL,{method:'POST',body:JSON.stringify(payload),headers:{'Content-Type':'application/json'}});
-      }
-      // Always succeed in demo (SHEETS_URL not set yet)
-      setSubmitted(true);
-      localStorage.removeItem(STORAGE_KEY);
-      showToast('✅ Datos guardados correctamente',4000);
-    }catch(e){
-      showToast('❌ Error al enviar. Revisa la conexión.',4000);
-    }
-    setSubmitting(false);
-  };
+<!-- STEP 6: OTROS -->
+<div class="step" id="step-5">
+  <div class="section-hdr"><h2>Servicios e infraestructura</h2></div>
+  <div class="card" style="padding:10px 14px;" id="otros-fields"></div>
+  <div class="divider"/>
+  <div class="section-hdr"><h2>Señalización</h2></div>
+  <div class="row2">
+    <div class="fg"><label>Estado tótem</label>
+      <select id="totem_estado"><option>BUENO</option><option>REGULAR</option><option>MALO</option><option>NO APLICA</option></select></div>
+    <div class="fg"><label>Estado señalización</label>
+      <select id="senia_estado"><option>BUENO</option><option>REGULAR</option><option>MALO</option></select></div>
+  </div>
+  <div class="fg"><label>Obs. cilindros residuos peligrosos</label><textarea id="cilindros_obs" placeholder="Enrejados, estado, ubicación..."></textarea></div>
+  <div class="divider"/>
+  <div class="section-hdr"><h2>Texto slide 5 — Fotos resumen</h2></div>
+  <div class="alert alert-info">Este texto aparece debajo de las fotos en el slide 5 del PPT.</div>
+  <div class="fg"><label>Descripción breve</label><textarea id="slide5_texto" placeholder="Ej: 6 dispensadores CL | 4 tanques | Canopy 2 tramos | Estación urbana"></textarea></div>
+  <div class="divider"/>
+  <div class="fg"><label>Observaciones generales</label><textarea id="obs_general" placeholder="Cualquier observación relevante..."></textarea></div>
+</div>
 
-  const stepComponents=[
-    <StepSite data={data} upd={upd}/>,
-    <StepDGH data={data} upd={upd}/>,
-    <StepDispensadores data={data} upd={upd}/>,
-    <StepCivil data={data} upd={upd}/>,
-    <StepElectrico data={data} upd={upd}/>,
-    <StepOtros data={data} upd={upd}/>,
-    <StepFotos data={data} upd={upd} onSubmit={handleSubmit} submitting={submitting} submitted={submitted}/>,
-  ];
+<!-- STEP 7: FOTOS + ENVIAR -->
+<div class="step" id="step-6">
+  <div class="section-hdr"><h2>Fotos del site</h2></div>
+  <div class="fg">
+    <label>Foto panorámica (slide 2)</label>
+    <div class="photo-grid" id="photos-site"></div>
+    <input type="file" id="file-site" accept="image/*" multiple capture="environment" onchange="handlePhotos(this,'site')"/>
+  </div>
+  <div class="fg">
+    <label>Fotos tanques</label>
+    <div class="photo-grid" id="photos-tanques"></div>
+    <input type="file" id="file-tanques" accept="image/*" multiple capture="environment" onchange="handlePhotos(this,'tanques')"/>
+  </div>
+  <div class="fg">
+    <label>Fotos dispensadores</label>
+    <div class="photo-grid" id="photos-dispensadores"></div>
+    <input type="file" id="file-dispensadores" accept="image/*" multiple capture="environment" onchange="handlePhotos(this,'dispensadores')"/>
+  </div>
+  <div class="fg">
+    <label>Otras fotos (civil, eléctrico, etc.)</label>
+    <div class="photo-grid" id="photos-otros"></div>
+    <input type="file" id="file-otros" accept="image/*" multiple capture="environment" onchange="handlePhotos(this,'otros')"/>
+  </div>
+  <div class="divider"/>
+  <div class="section-hdr"><h2>Revisión final</h2></div>
+  <div class="card" id="resumen-final"></div>
+  <div class="alert alert-warning" style="margin-top:12px">⚠️ Al enviar se guardan los datos en Google Sheets. Las fotos se guardan localmente.</div>
+  <button class="btn btn-primary" style="margin-top:12px;padding:16px;font-size:16px" onclick="submitForm()" id="btn-submit">📤 Enviar informe al sistema</button>
+  <div id="submit-error" style="font-size:12px;color:var(--danger);text-align:center;margin-top:8px;display:none"></div>
+</div>
 
-  const progress=((step)/(STEPS.length-1))*100;
+</div><!-- /content -->
 
-  return(
-    <>
-      {/* TOP BAR */}
-      <div className="top-bar">
-        <div>
-          <div style={{display:'flex',alignItems:'center',gap:8}}>
-            <span style={{fontSize:'18px'}}>⛽</span>
-            <span style={{fontFamily:'Syne',fontWeight:800,fontSize:'14px',letterSpacing:'-.01em'}}>EDS INSPECTOR</span>
-            <span className="badge badge-orange" style={{fontSize:'10px'}}>PRIMAX</span>
-          </div>
-          {data.nombre_site&&<p style={{fontSize:'11px',color:'var(--muted)',marginTop:2}}>{data.nombre_site}</p>}
-        </div>
-        <div className="step-dots">
-          {STEPS.map((_,i)=>(
-            <div key={i} className={`dot${i===step?' active':i<step?' done':''}`}
-              onClick={()=>setStep(i)} style={{cursor:'pointer'}}/>
-          ))}
-        </div>
-      </div>
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottom-nav">
+  <button class="btn btn-secondary" style="width:auto;flex-shrink:0" id="btn-prev" onclick="prevStep()">← Atrás</button>
+  <button class="btn btn-primary" id="btn-next" onclick="nextStep()">Siguiente →</button>
+</div>
 
-      {/* PROGRESS */}
-      <div className="progress-bar" style={{borderRadius:0}}>
-        <div className="progress-fill" style={{width:`${progress}%`}}/>
-      </div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
-      {/* STEP HEADER */}
-      <div style={{padding:'16px 20px 0',display:'flex',alignItems:'center',gap:10}}>
-        <span style={{fontSize:'24px'}}>{STEP_ICONS[step]}</span>
-        <div>
-          <p style={{fontSize:'11px',color:'var(--muted)',fontWeight:600,textTransform:'uppercase',letterSpacing:'.06em'}}>Paso {step+1} de {STEPS.length}</p>
-          <h1 style={{fontSize:'1.3rem',lineHeight:1.1}}>{STEPS[step]}</h1>
-        </div>
-      </div>
+<script>
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzn3qTMreFNg8drfd7HpmvfOBCF2MjSMTKqC08MrQXGZ_SEb8WX_-hy78xAXKcYkSau/exec';
+const STEPS = ['Site','DGH/Tanques','Dispensadores','Civil','Eléctrico','Otros','Enviar'];
+const ICONS = ['🏪','🛢️','⛽','🏗️','⚡','🔍','✅'];
+let currentStep = 0;
+let tanques = [], dispensadores = [], canopys = [], accesos = [], tableros = [];
+let photos = {site:[],tanques:[],dispensadores:[],otros:[]};
 
-      {/* CONTENT */}
-      <div className="content">
-        {stepComponents[step]}
-      </div>
-
-      {/* BOTTOM NAV */}
-      {!submitted&&(
-        <div className="bottom-nav">
-          {step>0?(
-            <button className="btn btn-secondary" style={{flex:'0 0 auto'}} onClick={goPrev}>← Atrás</button>
-          ):<div/>}
-          {step<STEPS.length-1?(
-            <button className="btn btn-primary btn-full" onClick={goNext}>
-              Siguiente: {STEPS[step+1]} {STEP_ICONS[step+1]}
-            </button>
-          ):<div style={{flex:1}}/>}
-        </div>
-      )}
-
-      {/* TOAST */}
-      {toast&&<div className="toast">{toast}</div>}
-    </>
-  );
+// ── TOGGLE BUTTONS ──────────────────────────────────────────
+function makeTogs(id, label, opts, def) {
+  let html = `<div class="tag-row"><span>${label}</span><div class="btn-grp">`;
+  opts.forEach(o => {
+    const active = o === def ? ' active' : '';
+    html += `<button class="btn-tog${active}" data-field="${id}" data-val="${o}" onclick="tog(this)">${o}</button>`;
+  });
+  html += '</div></div>';
+  return html;
 }
-</script>
-<script type="text/babel">
-const domContainer=document.getElementById('root');
-const root=ReactDOM.createRoot(domContainer);
-root.render(<App/>);
+function tog(btn) {
+  const field = btn.dataset.field;
+  document.querySelectorAll(`[data-field="${field}"]`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function togVal(field) {
+  const btn = document.querySelector(`[data-field="${field}"].active`);
+  return btn ? btn.dataset.val : '';
+}
+
+// ── FACILIDADES ─────────────────────────────────────────────
+const FAC_FIELDS = [
+  ['acometida_elec','Acometida eléctrica',['SÍ','NO'],'SÍ'],
+  ['acometida_agua','Acometida agua/desagüe',['SÍ','NO'],'SÍ'],
+  ['facilidad_ingreso','Facilidades de ingreso',['SÍ','NO'],'SÍ'],
+  ['internet','Conexión a internet',['SÍ','NO'],'SÍ'],
+  ['aire_acond','Aire acondicionado',['SÍ','NO'],'NO'],
+  ['atencion_flotas','Atención a flotas',['SÍ','NO'],'NO'],
+];
+document.getElementById('fac-fields').innerHTML = FAC_FIELDS.map(f => makeTogs(...f)).join('');
+
+const OTROS_FIELDS = [
+  ['hidrantes','Hidrantes',['SÍ','NO'],'NO'],
+  ['grupo_electrogeno','Grupo electrógeno',['SÍ','NO'],'NO'],
+  ['filtro_agua','Filtro de agua',['SÍ','NO'],'NO'],
+  ['filtro_aire','Filtro de aire',['SÍ','NO'],'NO'],
+  ['compresora','Compresora de aire',['SÍ','NO'],'NO'],
+  ['llanteria','Llantería',['SÍ','NO'],'NO'],
+  ['lavado','Zona de lavado',['SÍ','NO'],'NO'],
+];
+document.getElementById('otros-fields').innerHTML = OTROS_FIELDS.map(f => makeTogs(...f)).join('');
+
+const POZOS_FIELDS = [
+  ['puzos_aterr','Buzones pozo tierra en zona tanques',['SÍ','NO'],'NO'],
+  ['varilla_cobre','Varilla cobre + cable + cocodrilo',['SÍ','NO'],'NO'],
+];
+document.getElementById('pozos-fields').innerHTML = POZOS_FIELDS.map(f => makeTogs(...f)).join('');
+
+// ── DOTS ────────────────────────────────────────────────────
+function renderDots() {
+  document.getElementById('dots').innerHTML = STEPS.map((_,i) => {
+    let cls = i === currentStep ? 'dot active' : i < currentStep ? 'dot done' : 'dot';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+}
+
+// ── NAVIGATION ──────────────────────────────────────────────
+function goStep(n) {
+  document.getElementById(`step-${currentStep}`).classList.remove('active');
+  currentStep = n;
+  document.getElementById(`step-${currentStep}`).classList.add('active');
+  document.getElementById('step-num').textContent = `Paso ${currentStep+1} de ${STEPS.length}`;
+  document.getElementById('step-title').textContent = STEPS[currentStep];
+  document.getElementById('step-icon').textContent = ICONS[currentStep];
+  document.getElementById('progress-fill').style.width = `${(currentStep/(STEPS.length-1))*100}%`;
+  document.getElementById('btn-prev').style.display = currentStep === 0 ? 'none' : '';
+  document.getElementById('btn-next').style.display = currentStep === STEPS.length-1 ? 'none' : '';
+  renderDots();
+  if(currentStep === STEPS.length-1) renderResumen();
+  window.scrollTo({top:0,behavior:'smooth'});
+  saveDraft();
+}
+function nextStep() {
+  if(currentStep === 0 && !document.getElementById('nombre_site').value.trim()) {
+    showToast('⚠️ Ingresa el nombre del site'); return;
+  }
+  goStep(Math.min(currentStep+1, STEPS.length-1));
+}
+function prevStep() { goStep(Math.max(currentStep-1,0)); }
+
+// ── TOAST ───────────────────────────────────────────────────
+function showToast(msg, ms=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display='block';
+  setTimeout(()=>t.style.display='none', ms);
+}
+
+// ── TANQUES ─────────────────────────────────────────────────
+const PRODUCTOS = ['DIESEL B5 S-50','GASOHOL PREMIUM','GASOHOL REGULAR','GNV','GLP','SIN PRODUCTO'];
+function addTanque() {
+  const id = Date.now();
+  tanques.push({id});
+  renderTanques();
+}
+function renderTanques() {
+  const list = document.getElementById('tanques-list');
+  list.innerHTML = tanques.map((tk,i) => `
+    <div class="item-card" id="tk-card-${tk.id}">
+      <div class="item-hdr" onclick="toggleCard('tk-body-${tk.id}')">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge">TK ${i+1}</span><span style="font-size:13px;font-weight:600">Tanque ${i+1}</span></div>
+        <div style="display:flex;gap:6px">
+          ${tanques.length>1?`<button class="btn btn-danger btn-sm" onclick="delTanque(${tk.id},event)">✕</button>`:''}
+          <span style="color:var(--muted)">▾</span>
+        </div>
+      </div>
+      <div class="item-body" id="tk-body-${tk.id}">
+        <div class="row2">
+          <div class="fg"><label>N° Tanque</label><input type="number" id="tk_nro_${tk.id}" placeholder="1"/></div>
+          <div class="fg"><label>N° Compartimiento</label><input type="number" id="tk_comp_${tk.id}" placeholder="1" value="1"/></div>
+        </div>
+        <div class="row2">
+          <div class="fg"><label>Producto</label><select id="tk_prod_${tk.id}">${PRODUCTOS.map(p=>`<option>${p}</option>`).join('')}</select></div>
+          <div class="fg"><label>Estado</label><select id="tk_est_${tk.id}"><option>OPERATIVO</option><option>FUERA DE SERVICIO</option><option>EN MANTENIMIENTO</option></select></div>
+        </div>
+        <div class="row2">
+          <div class="fg"><label>Galones DGH</label><input type="number" id="tk_gdgh_${tk.id}" placeholder="8000"/></div>
+          <div class="fg"><label>Galones campo</label><input type="number" id="tk_gcampo_${tk.id}" placeholder="8000"/></div>
+        </div>
+        <div class="fg"><label>Año fabricación</label><input type="number" id="tk_anio_${tk.id}" placeholder="1997"/></div>
+        <div class="divider"/><h3 style="margin-bottom:10px;font-size:11px;color:var(--muted);text-transform:uppercase">Alturas NPT (cm)</h3>
+        <div class="row2">
+          <div class="fg"><label>Impulsión</label><input type="number" id="tk_alt_imp_${tk.id}" placeholder="cm"/></div>
+          <div class="fg"><label>Eléctrica</label><input type="number" id="tk_alt_elec_${tk.id}" placeholder="cm"/></div>
+        </div>
+        <div class="row2">
+          <div class="fg"><label>Venteo</label><input type="number" id="tk_alt_vent_${tk.id}" placeholder="cm"/></div>
+          <div class="fg"><label>Descarga</label><input type="number" id="tk_alt_desc_${tk.id}" placeholder="cm"/></div>
+        </div>
+        <div class="row2">
+          <div class="fg"><label>Altura manhole</label><input type="number" id="tk_alt_mh_${tk.id}" placeholder="cm"/></div>
+          <div class="fg"><label>Diám. manhole</label><input type="number" id="tk_diam_mh_${tk.id}" placeholder="cm"/></div>
+        </div>
+        <div class="divider"/><h3 style="margin-bottom:10px;font-size:11px;color:var(--muted);text-transform:uppercase">Checklist mecánico</h3>
+        <div style="background:var(--bg);border-radius:8px;padding:10px 12px;border:1px solid var(--border)">
+          ${makeTogs('tk_mang_'+tk.id,'Manguera eléctrica dorada',['SÍ','NO'],'NO')}
+          ${makeTogs('tk_res_'+tk.id,'Reservas eléctricas',['SÍ','NO'],'NO')}
+          ${makeTogs('tk_sello_'+tk.id,'Sello ATEX primer elemento',['SÍ','NO'],'NO')}
+          ${makeTogs('tk_aterr_'+tk.id,'Aterramiento',['SÍ','NO'],'NO')}
+          ${makeTogs('tk_telem_'+tk.id,'Telemetría',['SÍ','NO','N/A'],'N/A')}
+          ${makeTogs('tk_fibra_'+tk.id,'Enfibrado',['SÍ','NO','N/A'],'N/A')}
+          ${makeTogs('tk_catod_'+tk.id,'Protección catódica',['SÍ','NO','N/A'],'N/A')}
+          ${makeTogs('tk_valv_'+tk.id,'Válvula sobrellenado ⚠️',['SÍ','NO','N/A'],'NO')}
+          ${makeTogs('tk_superc_'+tk.id,'Supercruceta en venteo',['SÍ','NO'],'NO')}
+        </div>
+        <div class="row2" style="margin-top:10px">
+          <div class="fg"><label>Tipo descarga</label><select id="tk_desc_tipo_${tk.id}"><option>DIRECTA</option><option>REMOTA</option></select></div>
+          <div class="fg"><label>Líneas mecánicas</label><select id="tk_lineas_${tk.id}"><option>RÍGIDAS</option><option>HDPE</option><option>MIXTAS</option></select></div>
+        </div>
+        <div class="fg"><label>Marca/modelo bomba</label><input type="text" id="tk_bomba_${tk.id}" placeholder="RED JACKET, FRANKLIN..."/></div>
+        <div class="fg"><label>Observaciones</label><textarea id="tk_obs_${tk.id}" placeholder="Notas adicionales..."></textarea></div>
+      </div>
+    </div>`).join('');
+}
+function delTanque(id, e) { e.stopPropagation(); tanques = tanques.filter(t=>t.id!==id); renderTanques(); }
+if(tanques.length===0) addTanque();
+
+// ── DISPENSADORES ───────────────────────────────────────────
+function addDispensador() { dispensadores.push({id:Date.now()}); renderDispensadores(); }
+function renderDispensadores() {
+  const TIPOS = ['MULTIPRODUCTO','ALTO CAUDAL (DB5)','GNV','GLP','SOLO PRODUCTO'];
+  const MARCAS = ['GILBARCO','WAYNE','TOKHEIM','BENNETT','ASPRO','OTRA'];
+  document.getElementById('dispensadores-list').innerHTML = dispensadores.map((d,i) => `
+    <div class="item-card">
+      <div class="item-hdr" onclick="toggleCard('d-body-${d.id}')">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge">DISP ${i+1}</span><span style="font-size:13px;font-weight:600">Dispensador ${i+1}</span></div>
+        <div style="display:flex;gap:6px">
+          ${dispensadores.length>1?`<button class="btn btn-danger btn-sm" onclick="delDisp(${d.id},event)">✕</button>`:''}
+          <span style="color:var(--muted)">▾</span>
+        </div>
+      </div>
+      <div class="item-body" id="d-body-${d.id}">
+        <div class="row2">
+          <div class="fg"><label>N° Isla</label><input type="number" id="d_isla_${d.id}" placeholder="1"/></div>
+          <div class="fg"><label>N° Dispensador</label><input type="number" id="d_nro_${d.id}" placeholder="1"/></div>
+        </div>
+        <div class="row2">
+          <div class="fg"><label>Tipo *</label><select id="d_tipo_${d.id}">${TIPOS.map(t=>`<option>${t}</option>`).join('')}</select></div>
+          <div class="fg"><label>Marca *</label><select id="d_marca_${d.id}">${MARCAS.map(m=>`<option>${m}</option>`).join('')}</select></div>
+        </div>
+        <div class="row2">
+          <div class="fg"><label>Caras (ej: 1 y 2)</label><input type="text" id="d_caras_${d.id}" placeholder="1 y 2"/></div>
+          <div class="fg"><label>Estado</label><select id="d_est_${d.id}"><option>OPERATIVO</option><option>FUERA DE SERVICIO</option><option>EN MANTENIMIENTO</option></select></div>
+        </div>
+        <div class="fg"><label>Producto(s)</label><input type="text" id="d_prod_${d.id}" placeholder="DIESEL B5 S-50, PREMIUM"/></div>
+        <div class="row3">
+          <div class="fg"><label>Alt. isla (cm)</label><input type="number" id="d_alt_isla_${d.id}" placeholder="cm"/></div>
+          <div class="fg"><label>Alt. eléct. (cm)</label><input type="number" id="d_alt_elec_${d.id}" placeholder="cm"/></div>
+          <div class="fg"><label>Alt. impuls. (cm)</label><input type="number" id="d_alt_imp_${d.id}" placeholder="cm"/></div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:10px 12px;border:1px solid var(--border)">
+          ${makeTogs('d_mang_'+d.id,'Manguera eléctrica dorada con placa',['SÍ','NO'],'NO')}
+          ${makeTogs('d_res_'+d.id,'Reservas eléctricas',['SÍ','NO'],'NO')}
+          ${makeTogs('d_sello_'+d.id,'Sello ATEX primer elemento',['SÍ','NO'],'NO')}
+          ${makeTogs('d_valv_'+d.id,'Válvulas de impacto (3 unid.)',['SÍ','NO'],'NO')}
+          ${makeTogs('d_anclaje_'+d.id,'Barra anclaje empotrada',['SÍ','NO'],'NO')}
+          ${makeTogs('d_aterr_'+d.id,'Cable aterramiento',['SÍ','NO'],'NO')}
+          ${makeTogs('d_sump_'+d.id,'Buzón SUMP UPP',['SÍ','NO'],'NO')}
+          ${makeTogs('d_gab_'+d.id,'Data para gabinete de venta',['SÍ','NO'],'NO')}
+        </div>
+        <div class="fg" style="margin-top:10px"><label>Observaciones</label><textarea id="d_obs_${d.id}" placeholder="Notas adicionales..."></textarea></div>
+      </div>
+    </div>`).join('');
+}
+function delDisp(id,e){e.stopPropagation();dispensadores=dispensadores.filter(d=>d.id!==id);renderDispensadores();}
+if(dispensadores.length===0) addDispensador();
+
+// ── CANOPYS ─────────────────────────────────────────────────
+function addCanopy(){canopys.push({id:Date.now()});renderCanopys();}
+function renderCanopys(){
+  document.getElementById('canopys-list').innerHTML=canopys.map((c,i)=>`
+    <div class="item-card">
+      <div class="item-hdr" onclick="toggleCard('c-body-${c.id}')">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge">C${i+1}</span><span style="font-size:13px;font-weight:600">Canopy ${i+1}</span></div>
+        <div style="display:flex;gap:6px">
+          ${canopys.length>1?`<button class="btn btn-danger btn-sm" onclick="delCanopy(${c.id},event)">✕</button>`:''}
+          <span style="color:var(--muted)">▾</span>
+        </div>
+      </div>
+      <div class="item-body" id="c-body-${c.id}">
+        <div class="row2">
+          <div class="fg"><label>N° Canopy</label><input type="number" id="c_nro_${c.id}" placeholder="1"/></div>
+          <div class="fg"><label>Dimensiones</label><input type="text" id="c_dims_${c.id}" placeholder="23.2m x 8.10m"/></div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:10px 12px;border:1px solid var(--border)">
+          ${makeTogs('c_led_'+c.id,'Luminarias LED',['SÍ','NO'],'SÍ')}
+          ${makeTogs('c_op_'+c.id,'Luminarias operativas',['SÍ','NO'],'SÍ')}
+        </div>
+        <div class="fg" style="margin-top:10px"><label>Observaciones</label><textarea id="c_obs_${c.id}" placeholder="Estado general, canaletas, friso..."></textarea></div>
+      </div>
+    </div>`).join('');
+}
+function delCanopy(id,e){e.stopPropagation();canopys=canopys.filter(c=>c.id!==id);renderCanopys();}
+if(canopys.length===0) addCanopy();
+
+// ── ACCESOS ─────────────────────────────────────────────────
+function addAcceso(){accesos.push({id:Date.now()});renderAccesos();}
+function renderAccesos(){
+  document.getElementById('accesos-list').innerHTML=accesos.map((a,i)=>`
+    <div class="item-card">
+      <div class="item-hdr" onclick="toggleCard('a-body-${a.id}')">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge">ACC ${i+1}</span><span style="font-size:13px;font-weight:600">Acceso ${i+1}</span></div>
+        <div style="display:flex;gap:6px">
+          ${accesos.length>1?`<button class="btn btn-danger btn-sm" onclick="delAcceso(${a.id},event)">✕</button>`:''}
+          <span style="color:var(--muted)">▾</span>
+        </div>
+      </div>
+      <div class="item-body" id="a-body-${a.id}">
+        <div class="fg"><label>Ubicación (calle/jirón)</label><input type="text" id="a_ubic_${a.id}" placeholder="Jr. Cnel. Miguel Baquero"/></div>
+        <div class="row2">
+          <div class="fg"><label>Tipo</label><select id="a_tipo_${a.id}"><option>ENTRADA</option><option>SALIDA</option><option>ENTRADA/SALIDA</option></select></div>
+          <div class="fg"><label>Ancho (m)</label><input type="number" id="a_ancho_${a.id}" placeholder="12.16"/></div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:10px 12px;border:1px solid var(--border)">
+          ${makeTogs('a_ang_'+a.id,'Ángulo 45°',['CUMPLE','NO CUMPLE'],'CUMPLE')}
+          ${makeTogs('a_flecha_'+a.id,'Flecha señalización',['SÍ','NO'],'SÍ')}
+        </div>
+        <div class="fg" style="margin-top:10px"><label>Estado pavimento acceso</label>
+          <select id="a_pav_${a.id}"><option>BUENO</option><option>REGULAR</option><option>MALO — fisuras/grietas</option><option>MALO — pérdida superficie</option></select></div>
+        <div class="fg"><label>Observaciones</label><textarea id="a_obs_${a.id}"></textarea></div>
+      </div>
+    </div>`).join('');
+}
+function delAcceso(id,e){e.stopPropagation();accesos=accesos.filter(a=>a.id!==id);renderAccesos();}
+if(accesos.length===0) addAcceso();
+
+// ── TABLEROS ────────────────────────────────────────────────
+function addTablero(){tableros.push({id:Date.now()});renderTableros();}
+function renderTableros(){
+  document.getElementById('tableros-list').innerHTML=tableros.map((t,i)=>`
+    <div class="item-card">
+      <div class="item-hdr" onclick="toggleCard('t-body-${t.id}')">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge">T${i+1}</span><span style="font-size:13px;font-weight:600">Tablero ${i+1}</span></div>
+        <div style="display:flex;gap:6px">
+          ${tableros.length>1?`<button class="btn btn-danger btn-sm" onclick="delTablero(${t.id},event)">✕</button>`:''}
+          <span style="color:var(--muted)">▾</span>
+        </div>
+      </div>
+      <div class="item-body" id="t-body-${t.id}">
+        <div class="row2">
+          <div class="fg"><label>Nombre tablero</label><input type="text" id="t_nom_${t.id}" placeholder="TABLERO GENERAL"/></div>
+          <div class="fg"><label>Estado</label><select id="t_est_${t.id}"><option>OPERATIVO</option><option>FUERA DE SERVICIO</option><option>EN MANTENIMIENTO</option></select></div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:10px 12px;border:1px solid var(--border)">
+          ${makeTogs('t_aterr_'+t.id,'Cable aterramiento',['SÍ','NO'],'NO')}
+          ${makeTogs('t_rot_'+t.id,'Rotulado',['SÍ','NO'],'NO')}
+          ${makeTogs('t_diag_'+t.id,'Diagrama unifilar',['SÍ','NO'],'NO')}
+          ${makeTogs('t_dir_'+t.id,'Directorio',['SÍ','NO'],'NO')}
+          ${makeTogs('t_llav_'+t.id,'Llaves diferenciales/térmicas',['SÍ','NO'],'NO')}
+        </div>
+        <div class="fg" style="margin-top:10px"><label>Observaciones</label><textarea id="t_obs_${t.id}"></textarea></div>
+      </div>
+    </div>`).join('');
+}
+function delTablero(id,e){e.stopPropagation();tableros=tableros.filter(t=>t.id!==id);renderTableros();}
+if(tableros.length===0) addTablero();
+
+// ── COLLAPSIBLE ─────────────────────────────────────────────
+function toggleCard(id){const el=document.getElementById(id);el.style.display=el.style.display==='none'?'':'none';}
+
+// ── PHOTOS ──────────────────────────────────────────────────
+function handlePhotos(input, tag) {
+  Array.from(input.files).forEach(f => {
+    const r = new FileReader();
+    r.onload = ev => { photos[tag].push({id:Date.now()+Math.random(),src:ev.target.result}); renderPhotos(tag); };
+    r.readAsDataURL(f);
+  });
+  input.value='';
+}
+function renderPhotos(tag) {
+  const grid = document.getElementById(`photos-${tag}`);
+  grid.innerHTML = photos[tag].map(p=>`
+    <div class="photo-thumb">
+      <img src="${p.src}"/>
+      <button class="photo-del" onclick="delPhoto('${tag}','${p.id}')">✕</button>
+    </div>`).join('') +
+    (photos[tag].length<12?`<div class="photo-add" onclick="document.getElementById('file-${tag}').click()"><span style="font-size:24px;opacity:.5">+</span><span>Foto</span></div>`:'');
+}
+function delPhoto(tag,id){photos[tag]=photos[tag].filter(p=>String(p.id)!==String(id));renderPhotos(tag);}
+['site','tanques','dispensadores','otros'].forEach(renderPhotos);
+
+// ── COLLECT DATA ─────────────────────────────────────────────
+function v(id){const el=document.getElementById(id);return el?el.value:'';}
+function collectData(){
+  return {
+    submitted_at: new Date().toISOString(),
+    fecha:v('fecha'), codigo:v('codigo'), nombre_site:v('nombre_site'), ubicacion:v('ubicacion'),
+    tipo_eess:v('tipo_eess'), equipos_criticos:v('equipos_criticos'), antiguedad:v('antiguedad'),
+    ult_intervencion:v('ult_intervencion'), area_terreno:v('area_terreno'), area_estacion:v('area_estacion'),
+    area_tienda:v('area_tienda'), elaborado:v('elaborado'), revisado:v('revisado'), aprobado:v('aprobado'),
+    acometida_elec:togVal('acometida_elec'), acometida_agua:togVal('acometida_agua'),
+    facilidad_ingreso:togVal('facilidad_ingreso'), internet:togVal('internet'),
+    aire_acond:togVal('aire_acond'), atencion_flotas:togVal('atencion_flotas'),
+    pavimento_obs:v('pavimento_obs'), sardineles_obs:v('sardineles_obs'), venteos_obs:v('venteos_obs'),
+    pulsadores_nro:v('pulsadores_nro'), pulsadores_obs:v('pulsadores_obs'),
+    puzos_aterr:togVal('puzos_aterr'), hidrantes:togVal('hidrantes'),
+    grupo_electrogeno:togVal('grupo_electrogeno'), filtro_agua:togVal('filtro_agua'),
+    filtro_aire:togVal('filtro_aire'), compresora:togVal('compresora'),
+    llanteria:togVal('llanteria'), lavado:togVal('lavado'),
+    totem_estado:v('totem_estado'), senia_estado:v('senia_estado'),
+    cilindros_obs:v('cilindros_obs'), slide5_texto:v('slide5_texto'), obs_general:v('obs_general'),
+    fotos_count: photos.site.length+photos.tanques.length+photos.dispensadores.length+photos.otros.length,
+    tanques_json: JSON.stringify(tanques.map(tk=>({
+      nro:v('tk_nro_'+tk.id), compartimiento:v('tk_comp_'+tk.id), producto:v('tk_prod_'+tk.id),
+      estado:v('tk_est_'+tk.id), galones_dgh:v('tk_gdgh_'+tk.id), galones_campo:v('tk_gcampo_'+tk.id),
+      anio_fab:v('tk_anio_'+tk.id), alt_impulsion:v('tk_alt_imp_'+tk.id), alt_electrica:v('tk_alt_elec_'+tk.id),
+      alt_venteo:v('tk_alt_vent_'+tk.id), alt_descarga:v('tk_alt_desc_'+tk.id),
+      alt_manhole:v('tk_alt_mh_'+tk.id), diam_manhole:v('tk_diam_mh_'+tk.id),
+      manguera_dorada:togVal('tk_mang_'+tk.id), reservas_elec:togVal('tk_res_'+tk.id),
+      sello_atex:togVal('tk_sello_'+tk.id), aterramiento:togVal('tk_aterr_'+tk.id),
+      telemetria:togVal('tk_telem_'+tk.id), enfibrado:togVal('tk_fibra_'+tk.id),
+      prot_catodica:togVal('tk_catod_'+tk.id), valv_sobrellenado:togVal('tk_valv_'+tk.id),
+      venteo_supercruceta:togVal('tk_superc_'+tk.id), descarga_tipo:v('tk_desc_tipo_'+tk.id),
+      lineas_tipo:v('tk_lineas_'+tk.id), bomba_marca:v('tk_bomba_'+tk.id), obs:v('tk_obs_'+tk.id)
+    }))),
+    dispensadores_json: JSON.stringify(dispensadores.map(d=>({
+      isla:v('d_isla_'+d.id), nro_disp:v('d_nro_'+d.id), tipo:v('d_tipo_'+d.id),
+      marca:v('d_marca_'+d.id), caras:v('d_caras_'+d.id), estado:v('d_est_'+d.id),
+      producto:v('d_prod_'+d.id), alt_isla:v('d_alt_isla_'+d.id),
+      alt_electrica:v('d_alt_elec_'+d.id), alt_impulsion:v('d_alt_imp_'+d.id),
+      manguera_dorada:togVal('d_mang_'+d.id), reservas_elec:togVal('d_res_'+d.id),
+      sello_atex:togVal('d_sello_'+d.id), valv_impacto:togVal('d_valv_'+d.id),
+      barra_anclaje:togVal('d_anclaje_'+d.id), aterramiento:togVal('d_aterr_'+d.id),
+      sump_upp:togVal('d_sump_'+d.id), gabinete_data:togVal('d_gab_'+d.id), obs:v('d_obs_'+d.id)
+    }))),
+    canopys_json: JSON.stringify(canopys.map(c=>({
+      nro:v('c_nro_'+c.id), dims:v('c_dims_'+c.id),
+      luminarias_led:togVal('c_led_'+c.id), luminarias_op:togVal('c_op_'+c.id), obs:v('c_obs_'+c.id)
+    }))),
+    accesos_json: JSON.stringify(accesos.map(a=>({
+      ubicacion:v('a_ubic_'+a.id), tipo:v('a_tipo_'+a.id), ancho:v('a_ancho_'+a.id),
+      angulo_cumple:togVal('a_ang_'+a.id), flecha:togVal('a_flecha_'+a.id),
+      estado_pav:v('a_pav_'+a.id), obs:v('a_obs_'+a.id)
+    }))),
+    tableros_json: JSON.stringify(tableros.map(t=>({
+      nombre:v('t_nom_'+t.id), estado:v('t_est_'+t.id),
+      aterramiento:togVal('t_aterr_'+t.id), rotulado:togVal('t_rot_'+t.id),
+      diagrama:togVal('t_diag_'+t.id), directorio:togVal('t_dir_'+t.id),
+      diferencial:togVal('t_llav_'+t.id), obs:v('t_obs_'+t.id)
+    })))
+  };
+}
+
+// ── RESUMEN ──────────────────────────────────────────────────
+function renderResumen(){
+  const site = v('nombre_site')||'—';
+  const fecha = v('fecha')||'—';
+  document.getElementById('resumen-final').innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">Site</span><strong style="font-size:13px">${site}</strong></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">Fecha</span><strong style="font-size:13px">${fecha}</strong></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">Tanques</span><span class="badge">${tanques.length}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">Dispensadores</span><span class="badge">${dispensadores.length}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">Canopys</span><span class="badge">${canopys.length}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0"><span style="font-size:13px">Fotos</span><span class="badge" style="background:#22C55E22;color:var(--success)">${photos.site.length+photos.tanques.length+photos.dispensadores.length+photos.otros.length}</span></div>
+    </div>`;
+}
+
+// ── SUBMIT ───────────────────────────────────────────────────
+async function submitForm(){
+  const site = v('nombre_site');
+  if(!site){showToast('⚠️ Falta el nombre del site');return;}
+  const btn = document.getElementById('btn-submit');
+  btn.textContent='Enviando...'; btn.disabled=true;
+  const payload = collectData();
+  try {
+    await fetch(SHEETS_URL, {method:'POST', body:JSON.stringify(payload), headers:{'Content-Type':'application/json'}});
+    document.getElementById('step-6').innerHTML=`
+      <div class="success-screen">
+        <div style="font-size:4rem">✅</div>
+        <h1>¡Informe enviado!</h1>
+        <p style="color:var(--muted)">Los datos de <strong style="color:var(--text)">${site}</strong> fueron guardados en Google Sheets.</p>
+        <div class="alert alert-success" style="width:100%">El supervisor puede revisar y generar el PPT desde el panel de control.</div>
+        <div class="card" style="width:100%;text-align:left">
+          <p style="font-size:12px;color:var(--muted);margin-bottom:8px">RESUMEN</p>
+          <p style="font-size:13px">🏪 ${site}</p>
+          <p style="font-size:13px">🛢️ ${tanques.length} tanque(s)</p>
+          <p style="font-size:13px">⛽ ${dispensadores.length} dispensador(es)</p>
+          <p style="font-size:13px">📸 ${payload.fotos_count} foto(s)</p>
+        </div>
+      </div>`;
+    document.getElementById('bottom-nav').style.display='none';
+    localStorage.removeItem('eds_draft');
+  } catch(err) {
+    btn.textContent='📤 Enviar informe al sistema'; btn.disabled=false;
+    document.getElementById('submit-error').style.display='block';
+    document.getElementById('submit-error').textContent='Error al enviar. Verifica tu conexión e intenta de nuevo.';
+  }
+}
+
+// ── DRAFT ────────────────────────────────────────────────────
+function saveDraft(){try{localStorage.setItem('eds_draft',JSON.stringify({step:currentStep}));}catch(e){}}
+
+// ── INIT ─────────────────────────────────────────────────────
+document.getElementById('fecha').value = new Date().toISOString().slice(0,10);
+renderDots();
+document.getElementById('btn-prev').style.display='none';
 </script>
 </body>
 </html>
